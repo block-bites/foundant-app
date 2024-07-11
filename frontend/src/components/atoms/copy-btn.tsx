@@ -3,6 +3,7 @@ import { Box, Flex, keyframes } from "@chakra-ui/react"
 
 import { FaRegCopy } from "react-icons/fa"
 import { FaCheckCircle } from "react-icons/fa"
+import useWindowDimensions from "../hooks/useWindowDimensions"
 
 interface CopyBtnProps {
     valueToCopy: string
@@ -10,6 +11,7 @@ interface CopyBtnProps {
 
 const CopyBtn: React.FC<CopyBtnProps> = ({ valueToCopy }) => {
     const [isCopying, setIsCopying] = useState<boolean>(false)
+    const { width } = useWindowDimensions()
 
     const fade = keyframes` 0% {opacity: 1;} 70%  {opacity: 1;} 100% {opacity: 0}`
     const fadeAnimation = `${fade} infinite 2s linear`
@@ -37,8 +39,8 @@ const CopyBtn: React.FC<CopyBtnProps> = ({ valueToCopy }) => {
             fontSize="sm"
             fontWeight="semibold"
         >
-            <FaCheckCircle />
-            Copied!
+            <FaCheckCircle size={16} />
+            {width > 992 ? "Copied!" : null}
         </Flex>
     ) : (
         <Box
@@ -52,7 +54,7 @@ const CopyBtn: React.FC<CopyBtnProps> = ({ valueToCopy }) => {
                 },
             }}
         >
-            <FaRegCopy onClick={() => handleCopyClick()} cursor={"pointer"} />
+            <FaRegCopy size={16} onClick={() => handleCopyClick()} cursor={"pointer"} />
         </Box>
     )
 }
