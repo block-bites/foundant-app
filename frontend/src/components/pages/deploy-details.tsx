@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { defaultClient } from "../../casper-client"
 import { Box, Flex, Text, VStack } from "@chakra-ui/react"
+import useWindowDimensions from "../hooks/useWindowDimensions"
 import JsonView from "@uiw/react-json-view"
 import {
     Accordion,
@@ -11,25 +12,27 @@ import {
     AccordionIcon,
 } from "@chakra-ui/react"
 import { truncateToXSymbols } from "../utils"
+
 import DeployDetailsCeil from "../atoms/deploy-details-ceil"
 
 interface DeployDetailsProps {
-    screenWidth: number
     isMobile: boolean
 }
 
-const DeployDetails: React.FC<DeployDetailsProps> = ({ screenWidth, isMobile }) => {
+const DeployDetails: React.FC<DeployDetailsProps> = ({ isMobile }) => {
     const { deployHash } = useParams()
+    const { width } = useWindowDimensions()
+
     const [deployInfo, setDeployInfo] = useState<any>()
 
     const setTruncateLength = () => {
-        if (screenWidth === 0 && isMobile) {
+        if (width === 0 && isMobile) {
             return 5
-        } else if (screenWidth !== 0) {
-            if (screenWidth <= 480) {
+        } else if (width !== 0) {
+            if (width <= 480) {
                 return 10
             }
-            if (screenWidth <= 768) {
+            if (width <= 768) {
                 return 15
             }
         }

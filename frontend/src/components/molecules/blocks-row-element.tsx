@@ -1,6 +1,8 @@
 import React from "react"
 import { Flex, VStack, Text } from "@chakra-ui/react"
 
+import CopyBtn from "../atoms/copy-btn"
+
 interface BlockRowElementProps {
     height: number
     era: number
@@ -92,23 +94,26 @@ export default function BlockRowElement({
                     <Text fontSize={fontSize} fontWeight="normal" align="left">
                         BLOCK HASH
                     </Text>
-                    <Text
-                        fontSize={fontSize}
-                        fontWeight="semibold"
-                        align="left"
-                        width={[
-                            "70vw",
-                            "70vw",
-                            "calc(100vw - 540px)",
-                            "calc(100vw - 600px)",
-                            "unset",
-                        ]}
-                        textOverflow={["ellipsis"]}
-                        overflow={["hidden", "hidden", "hidden", "hidden", "none"]}
-                        whiteSpace="nowrap"
-                    >
-                        {blockHash}
-                    </Text>
+                    <Flex alignItems="center" gap={2}>
+                        <Text
+                            fontSize={fontSize}
+                            fontWeight="semibold"
+                            align="left"
+                            width={[
+                                "70vw",
+                                "70vw",
+                                "calc(100vw - 540px)",
+                                "calc(100vw - 600px)",
+                                "unset",
+                            ]}
+                            textOverflow={["ellipsis"]}
+                            overflow={["hidden", "hidden", "hidden", "hidden", "none"]}
+                            whiteSpace="nowrap"
+                        >
+                            {blockHash}
+                        </Text>
+                        <CopyBtn valueToCopy={blockHash} />
+                    </Flex>
                 </VStack>
             </Flex>
         </Flex>

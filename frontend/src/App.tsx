@@ -25,6 +25,7 @@ import {
     IsNetworkLaunchedProvider,
     useIsNetworkLaunchedContext,
 } from "./context/IsNetworkLaunchedContext"
+import useWindowDimensions from "./components/hooks/useWindowDimensions"
 
 export const App = () => {
     return (
@@ -50,7 +51,7 @@ type Deploy = any
 function AppContent() {
     const location = useLocation()
     const isSettingsPage = location.pathname === "/settings"
-    const [screenWidth, setScreenWidth] = useState<number>(0)
+    const { width } = useWindowDimensions()
     const [isLaptop, setIsLaptop] = useState<boolean>(false)
     const [isMobile, setIsMobile] = useState<boolean>(false)
     const { setIsNetworkRunning } = useIsNetworkRunningContext()
@@ -60,15 +61,10 @@ function AppContent() {
     useEffect(() => {
         setIsLaptop(window.innerWidth >= 768 && window.innerWidth < 1024)
         setIsMobile(window.innerWidth < 768)
-    }, [screenWidth])
+    }, [width])
 
     useEffect(() => {
         checkStatus()
-        function handleResize() {
-            setScreenWidth(window.innerWidth)
-        }
-        window.addEventListener("resize", handleResize)
-        return () => window.removeEventListener("resize", handleResize)
         // eslint-disable-next-line
     }, [])
 
@@ -109,17 +105,12 @@ function AppContent() {
                 <Route
                     path="/deploys"
                     element={
-                        <Deploys
-                            deploys={deploys}
-                            setDeploys={setDeploys}
-                            screenWidth={screenWidth}
-                            isMobile={isMobile}
-                        />
+                        <Deploys deploys={deploys} setDeploys={setDeploys} isMobile={isMobile} />
                     }
                 />
                 <Route
                     path="/deploys/:deployHash"
-                    element={<DeployDetails screenWidth={screenWidth} isMobile={isMobile} />}
+                    element={<DeployDetails isMobile={isMobile} />}
                 />
                 <Route path="/events" element={<Events />} />
                 <Route path="/logs" element={<Logs />} />

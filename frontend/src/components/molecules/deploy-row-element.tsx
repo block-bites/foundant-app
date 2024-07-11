@@ -2,25 +2,27 @@ import { Flex, Text, VStack } from "@chakra-ui/react"
 import React from "react"
 import { Link } from "react-router-dom"
 import { truncateToXSymbols } from "../utils"
+import useWindowDimensions from "../hooks/useWindowDimensions"
 
 interface DeployRowElementProps {
     deploy: any
-    screenWidth: number
     isMobile: boolean
 }
 
-const DeployRowElement: React.FC<DeployRowElementProps> = ({ deploy, screenWidth, isMobile }) => {
+const DeployRowElement: React.FC<DeployRowElementProps> = ({ deploy, isMobile }) => {
+    const { width } = useWindowDimensions()
+
     const setTruncateLength = () => {
-        if (screenWidth === 0 && isMobile) {
+        if (width === 0 && isMobile) {
             return 5
-        } else if (screenWidth !== 0) {
-            if (screenWidth <= 680) {
+        } else if (width !== 0) {
+            if (width <= 680) {
                 return 5
             }
-            if (screenWidth <= 940) {
+            if (width <= 940) {
                 return 10
             }
-            if (screenWidth <= 1200) {
+            if (width <= 1200) {
                 return 15
             }
         }
