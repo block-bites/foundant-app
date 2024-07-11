@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { defaultClient } from "../../casper-client"
-import { Box, Flex, HStack, Text, VStack } from "@chakra-ui/react"
+import { Box, Flex, Text, VStack } from "@chakra-ui/react"
 import JsonView from "@uiw/react-json-view"
 import {
     Accordion,
@@ -100,6 +100,8 @@ const DeployDetails: React.FC<DeployDetailsProps> = ({ screenWidth, isMobile }) 
                                         ? truncateToXSymbols(deployHash, setTruncateLength())
                                         : "-"
                                 }
+                                copyable
+                                hash={deployHash}
                             />
                             <DeployDetailsCeil
                                 title="Account Hash"
@@ -107,6 +109,8 @@ const DeployDetails: React.FC<DeployDetailsProps> = ({ screenWidth, isMobile }) 
                                     deployInfo.deploy.header.account,
                                     setTruncateLength()
                                 )}
+                                copyable
+                                hash={deployInfo.deploy.header.account}
                             />
                             <DeployDetailsCeil
                                 title="Body Hash"
@@ -114,6 +118,8 @@ const DeployDetails: React.FC<DeployDetailsProps> = ({ screenWidth, isMobile }) 
                                     deployInfo.deploy.header.body_hash,
                                     setTruncateLength()
                                 )}
+                                copyable
+                                hash={deployInfo.deploy.header.body_hash}
                             />
                             <DeployDetailsCeil
                                 title="Chain Name"
