@@ -6,22 +6,24 @@ import { HStack, Tab, Tabs, TabList, Flex, Icon, Text, Image } from "@chakra-ui/
 import { FaBell, FaRegFileCode } from "react-icons/fa"
 import { BiGridAlt } from "react-icons/bi"
 import { MdCloudUpload, MdSupervisorAccount } from "react-icons/md"
+import { useIsNetworkLaunchedContext } from "../../context/IsNetworkLaunchedContext"
+import { useIsMobileContext } from "../../context/isMobileContext"
+
 import NavbarMobile from "../molecules/navbar-mobile"
+import NavbarSubbar from "../molecules/navbar-subbar"
 
 import Logo from "../../assets/logo.svg"
-import NavbarSubbar from "../molecules/navbar-subbar"
-import { useIsNetworkLaunchedContext } from "../../context/IsNetworkLaunchedContext"
 
 interface NavbarProps {
     isLaptop: boolean
-    isMobile: boolean
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isLaptop, isMobile }) => {
+const Navbar: React.FC<NavbarProps> = ({ isLaptop }) => {
     const location: Location = useLocation()
     const [activePath, setActivePath] = useState<string>(location.pathname)
     const [open, setOpen] = useState<boolean>(false)
     const { isNetworkLaunched } = useIsNetworkLaunchedContext()
+    const { isMobile } = useIsMobileContext()
 
     useEffect(() => {
         setActivePath(location.pathname)

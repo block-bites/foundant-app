@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { defaultClient } from "../../casper-client"
 import { Box, Flex, Text, VStack } from "@chakra-ui/react"
 import useWindowDimensions from "../hooks/useWindowDimensions"
+import { useIsMobileContext } from "../../context/isMobileContext"
 import JsonView from "@uiw/react-json-view"
 import {
     Accordion,
@@ -15,13 +16,10 @@ import { truncateToXSymbols } from "../utils"
 
 import DeployDetailsCeil from "../atoms/deploy-details-ceil"
 
-interface DeployDetailsProps {
-    isMobile: boolean
-}
-
-const DeployDetails: React.FC<DeployDetailsProps> = ({ isMobile }) => {
+const DeployDetails = () => {
     const { deployHash } = useParams()
     const { width } = useWindowDimensions()
+    const { isMobile } = useIsMobileContext()
 
     const [deployInfo, setDeployInfo] = useState<any>()
 

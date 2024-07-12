@@ -21,6 +21,7 @@ import {
     IsNetworkRunningProvider,
     useIsNetworkRunningContext,
 } from "./context/IsNetworkRunningContext"
+import { IsMobileProvider, useIsMobileContext } from "./context/isMobileContext"
 import {
     IsNetworkLaunchedProvider,
     useIsNetworkLaunchedContext,
@@ -34,11 +35,13 @@ export const App = () => {
                 <ChakraProvider theme={fondantTheme}>
                     <IsNetworkLaunchedProvider>
                         <IsNetworkRunningProvider>
-                            <SearchProvider>
-                                <Router>
-                                    <AppContent />
-                                </Router>
-                            </SearchProvider>
+                            <IsMobileProvider>
+                                <SearchProvider>
+                                    <Router>
+                                        <AppContent />
+                                    </Router>
+                                </SearchProvider>
+                            </IsMobileProvider>
                         </IsNetworkRunningProvider>
                     </IsNetworkLaunchedProvider>
                 </ChakraProvider>
@@ -53,14 +56,15 @@ function AppContent() {
     const isSettingsPage = location.pathname === "/settings"
     const { width } = useWindowDimensions()
     const [isLaptop, setIsLaptop] = useState<boolean>(false)
-    const [isMobile, setIsMobile] = useState<boolean>(false)
+    const { setIsMobile } = useIsMobileContext()
     const { setIsNetworkRunning } = useIsNetworkRunningContext()
     const { isNetworkLaunched, setIsNetworkLaunched } = useIsNetworkLaunchedContext()
     const [deploys, setDeploys] = useState<Deploy[]>([])
 
     useEffect(() => {
-        setIsLaptop(window.innerWidth >= 768 && window.innerWidth < 1024)
-        setIsMobile(window.innerWidth < 768)
+        setIsLaptop(width >= 768 && width < 1024)
+        setIsMobile(width < 768)
+        // eslint-disable-next-line
     }, [width])
 
     useEffect(() => {
@@ -98,20 +102,15 @@ function AppContent() {
 
     return (
         <>
-            {!isSettingsPage && <Navbar isLaptop={isLaptop} isMobile={isMobile} />}
+            {!isSettingsPage && <Navbar isLaptop={isLaptop} />}
             <Routes>
                 <Route path="/" element={<Accounts isNetworkLaunched={isNetworkLaunched} />} />
                 <Route path="/blocks" element={<Blocks />} />
                 <Route
                     path="/deploys"
-                    element={
-                        <Deploys deploys={deploys} setDeploys={setDeploys} isMobile={isMobile} />
-                    }
+                    element={<Deploys deploys={deploys} setDeploys={setDeploys} />}
                 />
-                <Route
-                    path="/deploys/:deployHash"
-                    element={<DeployDetails isMobile={isMobile} />}
-                />
+                <Route path="/deploys/:deployHash" element={<DeployDetails />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/logs" element={<Logs />} />
                 <Route path="/settings" element={<Settings />} />

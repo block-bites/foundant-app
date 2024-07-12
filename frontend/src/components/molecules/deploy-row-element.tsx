@@ -3,14 +3,15 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { truncateToXSymbols } from "../utils"
 import useWindowDimensions from "../hooks/useWindowDimensions"
+import { useIsMobileContext } from "../../context/isMobileContext"
 
 interface DeployRowElementProps {
     deploy: any
-    isMobile: boolean
 }
 
-const DeployRowElement: React.FC<DeployRowElementProps> = ({ deploy, isMobile }) => {
+const DeployRowElement: React.FC<DeployRowElementProps> = ({ deploy }) => {
     const { width } = useWindowDimensions()
+    const { isMobile } = useIsMobileContext()
 
     const setTruncateLength = () => {
         if (width === 0 && isMobile) {
