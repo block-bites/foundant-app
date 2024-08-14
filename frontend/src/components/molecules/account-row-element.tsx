@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react"
 import { BiKey } from "react-icons/bi"
 import AccountModal from "./account-modal" // Assuming this is the modal component
+import CopyBtn from "../atoms/copy-btn"
 
 interface IAccountRowElemProps {
     publicKey: string
@@ -33,21 +34,24 @@ const AccountRowElement = ({ publicKey, privateKey }: IAccountRowElemProps) => {
                     <Text fontSize="md" color="grey.300" fontWeight={500}>
                         Public Key
                     </Text>
-                    <Text
-                        fontSize="xl"
-                        width={[
-                            "calc(100vw - 100px)",
-                            "calc(100vw - 100px)",
-                            "calc(100vw - 130px)",
-                            "unset",
-                        ]}
-                        color="grey.800"
-                        textOverflow={["ellipsis"]}
-                        overflow={["hidden", "hidden", "hidden", "hidden"]}
-                        whiteSpace="nowrap"
-                    >
-                        {publicKey}
-                    </Text>
+                    <Flex alignItems="center" gap={2}>
+                        <Text
+                            fontSize="xl"
+                            width={[
+                                "calc(100vw - 120px)",
+                                "calc(100vw - 130px)",
+                                "calc(100vw - 160px)",
+                                "unset",
+                            ]}
+                            color="grey.800"
+                            textOverflow={["ellipsis"]}
+                            overflow={["hidden", "hidden", "hidden", "hidden"]}
+                            whiteSpace="nowrap"
+                        >
+                            {publicKey}
+                        </Text>
+                        <CopyBtn valueToCopy={publicKey} />
+                    </Flex>
                 </VStack>
                 <HStack>
                     <Center

@@ -14,15 +14,19 @@ import Logs from "./components/pages/logs"
 import Settings from "./components/pages/settings"
 import Events from "./components/pages/events"
 import Deploys from "./components/pages/deploys"
+import DeployDetails from "./components/pages/deploy-details"
+
 import { NODE_URL_PORT } from "./constant"
 import {
     IsNetworkRunningProvider,
     useIsNetworkRunningContext,
 } from "./context/IsNetworkRunningContext"
+import { IsMobileProvider, useIsMobileContext } from "./context/isMobileContext"
 import {
     IsNetworkLaunchedProvider,
     useIsNetworkLaunchedContext,
 } from "./context/IsNetworkLaunchedContext"
+import useWindowDimensions from "./components/hooks/useWindowDimensions"
 
 export const App = () => {
     return (
@@ -31,11 +35,13 @@ export const App = () => {
                 <ChakraProvider theme={fondantTheme}>
                     <IsNetworkLaunchedProvider>
                         <IsNetworkRunningProvider>
-                            <SearchProvider>
-                                <Router>
-                                    <AppContent />
-                                </Router>
-                            </SearchProvider>
+                            <IsMobileProvider>
+                                <SearchProvider>
+                                    <Router>
+                                        <AppContent />
+                                    </Router>
+                                </SearchProvider>
+                            </IsMobileProvider>
                         </IsNetworkRunningProvider>
                     </IsNetworkLaunchedProvider>
                 </ChakraProvider>
@@ -43,28 +49,26 @@ export const App = () => {
         </NodeProvider>
     )
 }
+type Deploy = any
 
 function AppContent() {
     const location = useLocation()
     const isSettingsPage = location.pathname === "/settings"
-    const [screenWidth, setScreenWidth] = useState<number>(0)
+    const { width } = useWindowDimensions()
     const [isLaptop, setIsLaptop] = useState<boolean>(false)
-    const [isMobile, setIsMobile] = useState<boolean>(false)
+    const { setIsMobile } = useIsMobileContext()
     const { setIsNetworkRunning } = useIsNetworkRunningContext()
     const { isNetworkLaunched, setIsNetworkLaunched } = useIsNetworkLaunchedContext()
+    const [deploys, setDeploys] = useState<Deploy[]>([])
 
     useEffect(() => {
-        setIsLaptop(window.innerWidth >= 768 && window.innerWidth < 1024)
-        setIsMobile(window.innerWidth < 768)
-    }, [screenWidth])
+        setIsLaptop(width >= 768 && width < 1024)
+        setIsMobile(width < 768)
+        // eslint-disable-next-line
+    }, [width])
 
     useEffect(() => {
         checkStatus()
-        function handleResize() {
-            setScreenWidth(window.innerWidth)
-        }
-        window.addEventListener("resize", handleResize)
-        return () => window.removeEventListener("resize", handleResize)
         // eslint-disable-next-line
     }, [])
 
@@ -98,11 +102,15 @@ function AppContent() {
 
     return (
         <>
-            {!isSettingsPage && <Navbar isLaptop={isLaptop} isMobile={isMobile} />}
+            {!isSettingsPage && <Navbar isLaptop={isLaptop} />}
             <Routes>
                 <Route path="/" element={<Accounts isNetworkLaunched={isNetworkLaunched} />} />
                 <Route path="/blocks" element={<Blocks />} />
-                <Route path="/deploys" element={<Deploys />} />
+                <Route
+                    path="/deploys"
+                    element={<Deploys deploys={deploys} setDeploys={setDeploys} />}
+                />
+                <Route path="/deploys/:deployHash" element={<DeployDetails />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/logs" element={<Logs />} />
                 <Route path="/settings" element={<Settings />} />

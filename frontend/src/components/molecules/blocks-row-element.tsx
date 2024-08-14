@@ -1,5 +1,9 @@
 import React from "react"
 import { Flex, VStack, Text } from "@chakra-ui/react"
+import { truncateToXSymbols } from "../utils"
+import useWindowDimensions from "../hooks/useWindowDimensions"
+
+import CopyBtn from "../atoms/copy-btn"
 
 interface BlockRowElementProps {
     height: number
@@ -16,12 +20,34 @@ export default function BlockRowElement({
     age,
     blockHash,
 }: BlockRowElementProps) {
+    const { width } = useWindowDimensions()
+
     const fontSize = {
         base: "12px",
         sm: "15px",
         lg: "15px",
         xl: "15px",
         "2xl": "15px",
+    }
+
+    const setTruncateLength = () => {
+        if (width === 0) {
+            return 5
+        } else if (width !== 0) {
+            if (width <= 680) {
+                return 18
+            }
+            if (width <= 768) {
+                return 28
+            }
+            if (width <= 940) {
+                return 12
+            }
+            if (width <= 1260) {
+                return 20
+            }
+        }
+        return 0
     }
 
     return (
@@ -92,23 +118,12 @@ export default function BlockRowElement({
                     <Text fontSize={fontSize} fontWeight="normal" align="left">
                         BLOCK HASH
                     </Text>
-                    <Text
-                        fontSize={fontSize}
-                        fontWeight="semibold"
-                        align="left"
-                        width={[
-                            "70vw",
-                            "70vw",
-                            "calc(100vw - 540px)",
-                            "calc(100vw - 600px)",
-                            "unset",
-                        ]}
-                        textOverflow={["ellipsis"]}
-                        overflow={["hidden", "hidden", "hidden", "hidden", "none"]}
-                        whiteSpace="nowrap"
-                    >
-                        {blockHash}
-                    </Text>
+                    <Flex alignItems="center" gap={2}>
+                        <Text fontSize={fontSize} fontWeight="semibold" align="left">
+                            {truncateToXSymbols(blockHash, setTruncateLength())}
+                        </Text>
+                        <CopyBtn valueToCopy={blockHash} />
+                    </Flex>
                 </VStack>
             </Flex>
         </Flex>
