@@ -1,4 +1,4 @@
-FROM commondrum/cctl-fondant:latest
+FROM koxu1996/casper-cctl:2.0-rc3
 
 USER root
 

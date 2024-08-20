@@ -61,26 +61,31 @@ pub fn parse_node_ports() -> HashMap<String, HashMap<String, i32>> {
     let command_output = run_command("cctl-infra-node-view-ports", None).unwrap();
     let stdout = command_output.stdout;
 
-    let line_regex = Regex::new(r"node-\d+ -> .*").unwrap();
-    let port_regex = Regex::new(r"node-(\d+) -> CONSENSUS @ (\d+) :: RPC @ (\d+) :: REST @ (\d+) :: SSE @ (\d+) :: SPECULATIVE_EXEC @ (\d+)").unwrap();
+    let node_name_regex = Regex::new(r"CCTL :: NODE-(\d+)").unwrap();
+    let service_port_regex = Regex::new(r"CCTL ::\s+(PROTOCOL|BINARY|REST|SSE)\s+[-]+> *(\d+)").unwrap();
 
     let mut node_service_ports = HashMap::new();
+    let mut current_node_name = String::new();
+    let mut current_services = HashMap::new();
 
     for line in stdout.lines() {
-        if line_regex.is_match(line) {
-            for cap in port_regex.captures_iter(line) {
-                let node_name = format!("node-{}", &cap[1]);
-                let services = vec![
-                    ("CONSENSUS".to_string(), cap[2].parse::<i32>().unwrap()),
-                    ("RPC".to_string(), cap[3].parse::<i32>().unwrap()),
-                    ("REST".to_string(), cap[4].parse::<i32>().unwrap()),
-                    ("SSE".to_string(), cap[5].parse::<i32>().unwrap()),
-                ];
-                node_service_ports.insert(node_name, services.into_iter().collect());
+        if let Some(caps) = node_name_regex.captures(line) {
+            if !current_node_name.is_empty() {
+                // Save the previous node's ports
+                node_service_ports.insert(current_node_name.clone(), current_services.clone());
             }
+            // Start a new node
+            current_node_name = format!("node-{}", &caps[1]);
+        } else if let Some(caps) = service_port_regex.captures(line) {
+            let service_name = caps[1].to_string();
+            let port = caps[2].parse::<i32>().unwrap();
+            current_services.insert(service_name, port);
         }
     }
-
+    
+    if !current_node_name.is_empty() {
+        node_service_ports.insert(current_node_name, current_services);
+    }
 
     node_service_ports
 }   
